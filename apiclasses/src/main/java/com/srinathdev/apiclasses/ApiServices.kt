@@ -16,7 +16,7 @@ import retrofit2.http.*
 import java.lang.reflect.Type
 import java.util.concurrent.TimeUnit
 
-class ApiServices() {
+class ApiServices {
 
     object API {
         const val sign_in = "users/signin/"
@@ -129,178 +129,180 @@ class ApiServices() {
             }
             return retrofit as Retrofit
         }
-    }
 
-    /**
-     * Sign in API
-     * Method - POST
-     */
-    fun signin(baseUrl: BaseUrl, c: Context, listener: ResponseListener) {
-        var constructUrl = baseUrl.mBaseUrl
-        try {
-            val apiService = getClient(baseUrl.mBaseUrl).create(ApiInterface::class.java)
-            val mHashCode = API.sign_in
-            val mURL = constructUrl
-
-            val mObject = JsonObject()
-            /* mObject.addProperty("mobile_number", user.mMobileNumber)
-             mObject.addProperty("password", user.mPassword)
-
-             val call = apiService.POST(mURL, getHeader(), mObject)
-             initService(c, call, User::class.java, mHashCode, listener)*/
-            Log.d("Param --> ", mObject.toString())
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-
-    // ################################################################################################
-
-    /**
-     * Create RequestBody - text/plain
-     */
-
-    private fun requestBody(string: String): RequestBody {
-        return RequestBody.create(MediaType.parse("text/plain"), string)
-    }
-
-    /**
-     * Get Error Msg
-     * return - Response
-     */
-
-    private fun getErrorMsg(t: Throwable, hash: Int): com.srinathdev.apiclasses.apiModels.Response {
-        val r = com.srinathdev.apiclasses.apiModels.Response()
-        r.responseStatus = false
-        r.responseMessage = t.message!!
-        r.requestType = hash
-
-        Log.d("failure", t.message!!)
-
-        return r
-    }
-
-    /**
-     * Initiating the api call
-     */
-    private fun initService(
-        c: Context,
-        call: Call<ResponseBody>,
-        mSerializable: Type,
-        mHashCode: String,
-        listener: ResponseListener
-    ) {
-        Log.d("URL --> ", call.request().url().toString())
-        Log.d("METHOD --> ", call.request().method())
-        call.enqueue(object : retrofit2.Callback<ResponseBody> {
-            override fun onResponse(
-                call: Call<ResponseBody>,
-                response: retrofit2.Response<ResponseBody>
-            ) {
-                listener.onResponse(getResponse(c, response, mSerializable, mHashCode))
-            }
-
-            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                listener.onResponse(getErrorMsg(t, mHashCode.hashCode()))
-            }
-        })
-    }
-
-    /**
-     * Get Success and Failure Msg
-     * @return - Response
-     */
-
-    private fun getResponse(
-        context: Context,
-        mResponse: retrofit2.Response<ResponseBody>,
-        mSerializable: Type,
-        mHashCode: String
-    ): Response? {
-        val response: com.srinathdev.apiclasses.apiModels.Response?
-
-        if (!Utilites.isInternetAvailable(context)) {
-            okHttpClient?.dispatcher()?.cancelAll()
-            return null
-        }
-
-        if (mResponse.isSuccessful) {
-            val body = mResponse.body()?.string()!!
-            Log.d("success", body)
-            response = Gson().fromJson(body, mSerializable)
-        } else {
+        /**
+         * Sign in API
+         * Method - POST
+         */
+        fun signin(baseUrl: BaseUrl, c: Context, listener: ResponseListener) {
+            var constructUrl = baseUrl.mBaseUrl
             try {
-                if (mResponse.code() == 401) { // Unauthorized User / Invalid Token
-                    Log.e("unauthorized", mResponse.errorBody()!!.string())
-                    Log.e("unauthorized url", mResponse.raw().request().url().toString())
-                    okHttpClient?.dispatcher()?.cancelAll()
-                    return null
-                } else {
-                    val errorBody = mResponse.errorBody()?.string()!!
-                    Log.e("fail", errorBody)
-                    response = Gson().fromJson(errorBody, mSerializable)
-                    response?.responseStatus = false
-                }
+                val apiService = getClient(baseUrl.mBaseUrl).create(ApiInterface::class.java)
+                val mHashCode = baseUrl.mSubDomain
+                val mURL = constructUrl
+
+                val mObject = JsonObject()
+                /* mObject.addProperty("mobile_number", user.mMobileNumber)
+                 mObject.addProperty("password", user.mPassword)
+
+                 val call = apiService.POST(mURL, getHeader(), mObject)
+                 initService(c, call, User::class.java, mHashCode, listener)*/
+                Log.d("Param --> ", mObject.toString())
             } catch (e: Exception) {
-                Toast.makeText(context, e.message!!, Toast.LENGTH_SHORT).show()
+                e.printStackTrace()
+            }
+        }
+
+        // ################################################################################################
+
+        /**
+         * Create RequestBody - text/plain
+         */
+
+        private fun requestBody(string: String): RequestBody {
+            return RequestBody.create(MediaType.parse("text/plain"), string)
+        }
+
+        /**
+         * Get Error Msg
+         * return - Response
+         */
+
+        private fun getErrorMsg(t: Throwable, hash: Int): com.srinathdev.apiclasses.apiModels.Response {
+            val r = com.srinathdev.apiclasses.apiModels.Response()
+            r.responseStatus = false
+            r.responseMessage = t.message!!
+            r.requestType = hash
+
+            Log.d("failure", t.message!!)
+
+            return r
+        }
+
+        /**
+         * Initiating the api call
+         */
+        private fun initService(
+            c: Context,
+            call: Call<ResponseBody>,
+            mSerializable: Type,
+            mHashCode: String,
+            listener: ResponseListener
+        ) {
+            Log.d("URL --> ", call.request().url().toString())
+            Log.d("METHOD --> ", call.request().method())
+            call.enqueue(object : retrofit2.Callback<ResponseBody> {
+                override fun onResponse(
+                    call: Call<ResponseBody>,
+                    response: retrofit2.Response<ResponseBody>
+                ) {
+                    listener.onResponse(getResponse(c, response, mSerializable, mHashCode))
+                }
+
+                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                    listener.onResponse(getErrorMsg(t, mHashCode.hashCode()))
+                }
+            })
+        }
+
+        /**
+         * Get Success and Failure Msg
+         * @return - Response
+         */
+
+        private fun getResponse(
+            context: Context,
+            mResponse: retrofit2.Response<ResponseBody>,
+            mSerializable: Type,
+            mHashCode: String
+        ): Response? {
+            val response: com.srinathdev.apiclasses.apiModels.Response?
+
+            if (!Utilites.isInternetAvailable(context)) {
+                okHttpClient?.dispatcher()?.cancelAll()
                 return null
             }
+
+            if (mResponse.isSuccessful) {
+                val body = mResponse.body()?.string()!!
+                Log.d("success", body)
+                response = Gson().fromJson(body, mSerializable)
+            } else {
+                try {
+                    if (mResponse.code() == 401) { // Unauthorized User / Invalid Token
+                        Log.e("unauthorized", mResponse.errorBody()!!.string())
+                        Log.e("unauthorized url", mResponse.raw().request().url().toString())
+                        okHttpClient?.dispatcher()?.cancelAll()
+                        return null
+                    } else {
+                        val errorBody = mResponse.errorBody()?.string()!!
+                        Log.e("fail", errorBody)
+                        response = Gson().fromJson(errorBody, mSerializable)
+                        response?.responseStatus = false
+                    }
+                } catch (e: Exception) {
+                    Toast.makeText(context, e.message!!, Toast.LENGTH_SHORT).show()
+                    return null
+                }
+            }
+            response?.requestType = mHashCode.hashCode()
+            return response
         }
-        response?.requestType = mHashCode.hashCode()
-        return response
+
+        /**
+         * Get Common Header
+         * @return - HashMap
+         */
+
+        private fun getHeader(): HashMap<String, String> {
+            val mHeader = HashMap<String, String>()
+            mHeader["Content-Type"] = "application/json"
+            mHeader["device"] = ApiApplication.instance().deviceId
+            mHeader["platform"] = ApiApplication.instance().deviceType
+
+            Log.d("Header --> ", mHeader.toString())
+
+            return mHeader
+        }
+
+
+        private fun getlogoutHeader(): HashMap<String, String> {
+            val mHeader = HashMap<String, String>()
+
+            mHeader["device"] = ApiApplication.instance().deviceId
+            mHeader["platform"] = ApiApplication.instance().deviceType
+
+            Log.d("Header --> ", mHeader.toString())
+
+            return mHeader
+        }
+
+        private fun getHeaderContent(): HashMap<String, String> {
+            val mHeader = HashMap<String, String>()
+            mHeader["Content-Type"] = "application/json"
+            Log.d("Header --> ", mHeader.toString())
+
+            return mHeader
+        }
+
+
+        /**
+         * Get Auth Header
+         * return - HashMap<String, String>
+         */
+
+        private fun getCustomAuthHeader(c: Context, token: String): HashMap<String, String> {
+            val mHeader = HashMap<String, String>()
+            mHeader["Content-Type"] = "application/json"
+            mHeader["Authorization"] = "Token $token"
+
+            Log.d("Auth Header --> ", mHeader.toString())
+
+            return mHeader
+        }
     }
 
-    /**
-     * Get Common Header
-     * @return - HashMap
-     */
 
-    private fun getHeader(): HashMap<String, String> {
-        val mHeader = HashMap<String, String>()
-        mHeader["Content-Type"] = "application/json"
-        mHeader["device"] = ApiApplication.instance().deviceId
-        mHeader["platform"] = ApiApplication.instance().deviceType
-
-        Log.d("Header --> ", mHeader.toString())
-
-        return mHeader
-    }
-
-
-    private fun getlogoutHeader(): HashMap<String, String> {
-        val mHeader = HashMap<String, String>()
-
-        mHeader["device"] = ApiApplication.instance().deviceId
-        mHeader["platform"] = ApiApplication.instance().deviceType
-
-        Log.d("Header --> ", mHeader.toString())
-
-        return mHeader
-    }
-
-    private fun getHeaderContent(): HashMap<String, String> {
-        val mHeader = HashMap<String, String>()
-        mHeader["Content-Type"] = "application/json"
-        Log.d("Header --> ", mHeader.toString())
-
-        return mHeader
-    }
-
-
-    /**
-     * Get Auth Header
-     * return - HashMap<String, String>
-     */
-
-    private fun getCustomAuthHeader(c: Context, token: String): HashMap<String, String> {
-        val mHeader = HashMap<String, String>()
-        mHeader["Content-Type"] = "application/json"
-        mHeader["Authorization"] = "Token $token"
-
-        Log.d("Auth Header --> ", mHeader.toString())
-
-        return mHeader
-    }
 
 
 }
