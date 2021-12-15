@@ -109,7 +109,7 @@ class ApiServices {
         private var retrofit: Retrofit? = null
         private var okHttpClient: OkHttpClient? = null
 
-        private fun getClient(url:String): Retrofit {
+        private fun getClient(url: String): Retrofit {
 
             if (okHttpClient == null) {
                 okHttpClient = OkHttpClient.Builder()
@@ -142,11 +142,11 @@ class ApiServices {
                 val mURL = constructUrl
 
                 val mObject = JsonObject()
-                /* mObject.addProperty("mobile_number", user.mMobileNumber)
-                 mObject.addProperty("password", user.mPassword)
+                mObject.addProperty("mobile_number", "")
+                mObject.addProperty("password", "")
 
-                 val call = apiService.POST(mURL, getHeader(), mObject)
-                 initService(c, call, User::class.java, mHashCode, listener)*/
+                val call = apiService.POST(mURL, getHeader(), mObject)
+                initService(c, call, ResponseListener::class.java, mHashCode, listener)
                 Log.d("Param --> ", mObject.toString())
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -168,7 +168,10 @@ class ApiServices {
          * return - Response
          */
 
-        private fun getErrorMsg(t: Throwable, hash: Int): com.srinathdev.apiclasses.apiModels.Response {
+        private fun getErrorMsg(
+            t: Throwable,
+            hash: Int
+        ): com.srinathdev.apiclasses.apiModels.Response {
             val r = com.srinathdev.apiclasses.apiModels.Response()
             r.responseStatus = false
             r.responseMessage = t.message!!
@@ -301,8 +304,4 @@ class ApiServices {
             return mHeader
         }
     }
-
-
-
-
 }
