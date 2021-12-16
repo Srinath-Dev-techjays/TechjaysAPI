@@ -131,12 +131,13 @@ class ApiServices {
          */
         fun signin(baseUrl: BaseUrl, mUser: User, c: Context, listener: ResponseListener) {
             API.sign_in = baseUrl.mMisc
-            var constructUrl = baseUrl.mBaseUrl
+            var constructUrl = baseUrl.mBaseUrl+API.sign_in
 
             try {
                 val apiService = getClient(baseUrl.mBaseUrl).create(ApiInterface::class.java)
-                val mHashCode = baseUrl.mSubDomain
+                val mHashCode = baseUrl.mMisc
                 val mURL = constructUrl
+                Log.d("check",mURL)
 
                 val mObject = JsonObject()
                 mObject.addProperty("mobile_number", mUser.mMobileNumber)
@@ -257,14 +258,13 @@ class ApiServices {
         private fun getHeader(): HashMap<String, String> {
             val mHeader = HashMap<String, String>()
             mHeader["Content-Type"] = "application/json"
-            mHeader["device"] = ApiApplication.instance().deviceId
-            mHeader["platform"] = ApiApplication.instance().deviceType
+            mHeader["device"] = "android"
+            mHeader["platform"] = "android"
 
             Log.d("Header --> ", mHeader.toString())
 
             return mHeader
         }
-
 
         private fun getlogoutHeader(): HashMap<String, String> {
             val mHeader = HashMap<String, String>()
