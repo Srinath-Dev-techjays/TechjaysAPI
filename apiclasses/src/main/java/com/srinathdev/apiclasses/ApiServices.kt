@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit
 class ApiServices {
 
     object API {
-        const val sign_in = "users/signin/"
+        var sign_in = ""
     }
 
     private interface ApiInterface {
@@ -98,12 +98,6 @@ class ApiServices {
             @Url url: String,
             @HeaderMap headerMap: Map<String, String>
         ): Call<ResponseBody>
-
-        @HTTP(method = "DELETE", path = API.sign_in, hasBody = true)
-        fun deleteNotification(
-            @Body body: JsonObject,
-            @HeaderMap headerMap: Map<String, String>
-        ): Call<ResponseBody>
     }
 
     companion object {
@@ -135,19 +129,21 @@ class ApiServices {
          * Sign in API
          * Method - POST
          */
-        fun signin(baseUrl: BaseUrl,mUser: User, c: Context, listener: ResponseListener) {
+        fun signin(baseUrl: BaseUrl, mUser: User, c: Context, listener: ResponseListener) {
+            API.sign_in = baseUrl.mMisc
             var constructUrl = baseUrl.mBaseUrl
+
             try {
                 val apiService = getClient(baseUrl.mBaseUrl).create(ApiInterface::class.java)
                 val mHashCode = baseUrl.mSubDomain
                 val mURL = constructUrl
 
                 val mObject = JsonObject()
-                mObject.addProperty("mobile_number", "")
-                mObject.addProperty("password", "")
+                mObject.addProperty("mobile_number", mUser.mMobileNumber)
+                mObject.addProperty("password", mUser.mPassword)
 
                 val call = apiService.POST(mURL, getHeader(), mObject)
-                initService(c, call, ResponseListener::class.java, mHashCode, listener)
+                initService(c, call, User::class.java, mHashCode, listener)
                 Log.d("Param --> ", mObject.toString())
             } catch (e: Exception) {
                 e.printStackTrace()
