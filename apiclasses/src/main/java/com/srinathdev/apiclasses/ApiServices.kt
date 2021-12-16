@@ -8,6 +8,7 @@ import com.google.gson.JsonObject
 import com.srinathdev.apiclasses.apiModels.BaseUrl
 import com.srinathdev.apiclasses.apiModels.Response
 import com.srinathdev.apiclasses.apiModels.ResponseListener
+import com.srinathdev.apiclasses.apiModels.User
 import okhttp3.*
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -134,7 +135,7 @@ class ApiServices {
          * Sign in API
          * Method - POST
          */
-        fun signin(baseUrl: BaseUrl, c: Context, listener: ResponseListener) {
+        fun signin(baseUrl: BaseUrl,mUser: User, c: Context, listener: ResponseListener) {
             var constructUrl = baseUrl.mBaseUrl
             try {
                 val apiService = getClient(baseUrl.mBaseUrl).create(ApiInterface::class.java)

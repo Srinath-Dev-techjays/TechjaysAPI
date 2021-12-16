@@ -15,7 +15,6 @@ class ApiApplication : Application() {
     @SuppressLint("HardwareIds")
     override fun onCreate() {
         super.onCreate()
-
         mContext = this
         deviceId = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
         deviceName = android.os.Build.MANUFACTURER
